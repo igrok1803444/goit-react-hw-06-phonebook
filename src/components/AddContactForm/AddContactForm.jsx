@@ -1,17 +1,28 @@
+import { useDispatch } from 'react-redux';
 import { Label, Form, SubmitButton } from './AddContactForm.styled';
+import { addContact } from 'redux/contactsSlice';
 
-export const AddContactForm = ({ addFunction }) => {
+export const AddContactForm = () => {
+  const dispatch = useDispatch();
+
+  const formHandler = event => {
+    event.preventDefault();
+    dispatch(
+      addContact({
+        name: event.target.name.value,
+        number: numberEdit(event.target.number.value),
+      })
+    );
+    event.target.reset();
+  };
+  const numberEdit = number => {
+    const editingNumber = number.split('');
+    editingNumber.splice(3, 0, '-');
+    editingNumber.splice(6, 0, '-');
+    return editingNumber.join('');
+  };
   return (
-    <Form
-      onSubmit={event => {
-        event.preventDefault();
-        addFunction({
-          name: event.target.name.value,
-          number: event.target.number.value,
-        });
-        event.target.reset();
-      }}
-    >
+    <Form onSubmit={formHandler}>
       <Label>
         {' '}
         Name:
@@ -24,7 +35,7 @@ export const AddContactForm = ({ addFunction }) => {
           type="tel"
           name="number"
           required
-          pattern="[0-9]{3}-[0-9]{2}-[0-9]{2}"
+          // pattern="[0-9]{3}-[0-9]{2}-[0-9]{2}"
           placeholder="000-00-00"
         />
       </Label>
